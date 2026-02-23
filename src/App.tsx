@@ -2,10 +2,10 @@
 import { useState } from "react";
 
 // Data
-import { stocks, trades, positions } from "./data/stockData";
+import { stocks, trades, positions, holdings } from "./data/stockData";
 
 // Types
-import type { Stock, Trade, Positions } from "./types/stock.types";
+import type { Stock, Trade, Positions, Holding } from "./types/stock.types";
 
 // Components
 import StockCard from "./components/StockCard";
@@ -154,7 +154,19 @@ function App() {
             render: (v) => `$${Number(v).toFixed(2)}`,
           },
           { key: "ltp", header: "Last Traded Price" },
-          { key: "pnl", header: "Profit & Loss" },
+          {
+            key: "pnl",
+            header: "Profit & Loss",
+            render: (v) => {
+              const n = Number(v);
+              return (
+                <span style={{ color: n >= 0 ? "green" : "red" }}>
+                  {n >= 0 ? "+" : ""}
+                  {n.toFixed(2)}%
+                </span>
+              );
+            },
+          },
           {
             key: "pnlPct",
             header: "Profit & Loss %",
@@ -168,6 +180,24 @@ function App() {
               );
             },
           },
+        ]}
+      />
+
+      {/* Generic Components — Holdings table */}
+      <h2 style={{ color: "#1E40AF" }}>Holdings Table</h2>
+      <DataTable<Holding>
+        data={holdings}
+        rowKey="id"
+        columns={[
+          { key: "symbol", header: "Symbol" },
+          { key: "quantity", header: "Qty" },
+          {
+            key: "investedValue",
+            header: "Invested Value",
+            render: (v) => `$${Number(v).toFixed(2)}`,
+          },
+          { key: "currentValue", header: "Current Value", render: (v) => `$${Number(v).toFixed(2)}` },
+          { key: "totalReturn", header: "Total Return", render: (v) => `${Number(v).toFixed(2)}` },
         ]}
       />
 

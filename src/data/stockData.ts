@@ -1,5 +1,5 @@
 // src/data/stockData.ts
-import type { Stock, Trade, Positions } from '../types/stock.types';
+import type { Stock, Trade, Positions, Holding } from '../types/stock.types';
  
 export const stocks: Stock[] = [
   { id: '1', symbol: 'AAPL', name: 'Apple Inc.',
@@ -44,4 +44,21 @@ export const positions: Positions[] = [
   { id: 'p5', symbol: 'JPM',   quantity: 20,
     avgPrice: 192.00, ltp: 196.40,
     pnl:   88.00, pnlPct:  2.29 },
+];
+
+// ─── Holdings (Exercise 7.4) — invested vs current value view ─────────
+// investedValue = qty * avgPrice
+// currentValue  = qty * ltp
+// totalReturn   = currentValue - investedValue
+export const holdings: Holding[] = [
+  { id: 'h1', symbol: 'AAPL',  quantity: 10,
+    investedValue: 1_750.00, currentValue: 1_893.00, totalReturn:  143.00 },
+  { id: 'h2', symbol: 'MSFT',  quantity:  5,
+    investedValue: 1_800.00, currentValue: 1_894.50, totalReturn:   94.50 },
+  { id: 'h3', symbol: 'TSLA',  quantity:  8,
+    investedValue: 2_120.00, currentValue: 1_988.00, totalReturn: -132.00 },
+  { id: 'h4', symbol: 'GOOGL', quantity: 15,
+    investedValue: 2_175.00, currentValue: 2_127.00, totalReturn:  -48.00 },
+  { id: 'h5', symbol: 'JPM',   quantity: 20,
+    investedValue: 3_840.00, currentValue: 3_928.00, totalReturn:   88.00 },
 ];
