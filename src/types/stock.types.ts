@@ -38,3 +38,12 @@ export interface Positions {
     pnl: number;
     pnlPct: number;
 }
+
+export interface Holding {
+    id: string;
+    symbol: string;
+    quantity: number;
+    investedValue: number;
+    currentValue: number;
+    totalReturn: number;
+}
