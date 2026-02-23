@@ -28,7 +28,7 @@ const PortfolioSummary: React.FC<PortfolioSummaryProps> = ({
 
   // 2. Primitives - TypeScript infers type fro inital value
   const [selectedSector, setSelectedSector] = useState<string>("All");
-  const [sortBy, setSortBy] = useState<"price" | "change" | "volume">("price");
+  // const [sortBy, setSortBy] = useState<"price" | "change" | "volume">("price");
 
   useEffect(() => {
     // always use setTimeout if theres calculation on the frontend, even if its for a second
