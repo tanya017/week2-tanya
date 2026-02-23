@@ -19,7 +19,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sectorFilter, setSectorFilter] = useState("");
   const [tradeHistory, setTradeHistory] = useState<Trade[]>(trades);
-  const [positionsData, setPositionsData] = useState<Positions[]>(positions);
 
   // Filter stocks based on search and sector
   const filteredStocks = stocks.filter((s) => {
@@ -144,7 +143,7 @@ function App() {
       {/* Generic Components — Positions table */}
       <h2 style={{ color: "#1E40AF" }}>Positions</h2>
       <DataTable<Positions>
-        data={positionsData}
+        data={positions}
         rowKey="id"
         columns={[
           { key: "symbol", header: "Symbol" },
