@@ -1,8 +1,8 @@
 // Generic Components
-
 import { useState } from "react";
 
 type SortDir = "asc" | "desc" | null;
+
 
 interface SortState<T> {
   key: keyof T | null;
@@ -25,6 +25,7 @@ interface DataTableProps<T extends object> {
   rowKey: keyof T; // which key is unique key
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
+  filterKey?: keyof T;
 }
 
 // 3. Generic component - not the <T extends object> on the arrow function
@@ -34,8 +35,10 @@ function DataTable<T extends object>({
   rowKey,
   onRowClick,
   emptyMessage = "No data found.",
+  filterKey,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<SortState<T>>({ key: null, dir: null });
+  const [filtering, setFiltering] = useState("");
 
   const handleSort = (key: keyof T) => {
     setSort((prev) => ({
@@ -52,11 +55,41 @@ function DataTable<T extends object>({
     if (av > bv) return sort.dir === "asc" ? 1 : -1;
     return 0;
   });
+
+  const filteredData =
+    filterKey && filtering
+      ? sorted.filter((row) =>
+          String(row[filterKey])
+            .toLowerCase()
+            .includes(filtering.toLowerCase()),
+        )
+      : sorted;
+
   if (DataTable.length === 0) return <p>{emptyMessage}</p>;
 
   return (
-    <table style={{ width: "100%", borderCollapse: "collapse" }}>
-      {/* <thead>
+    <>
+      {filterKey && (
+        <div style={{ marginBottom: 8 }}>
+          <input
+            type="text"
+            placeholder={`Filter by ${String(filterKey)}...`}
+            value={filtering}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFiltering(e.target.value)
+            }
+            style={{
+              padding: "6px 10px",
+              borderRadius: 4,
+              border: "1px solid #D1D5DB",
+              width: 220,
+            }}
+          />
+        </div>
+      )}
+
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        {/* <thead>
         <tr style={{ backgroundColor: "#1E3A8A", color: "#fff" }}>
           {columns.map((col) => (
             <th key={String(col.key)} style={{ padding: 8, textAlign: "left" }}>
@@ -65,42 +98,50 @@ function DataTable<T extends object>({
           ))}
         </tr>
       </thead> */}
-      <thead>
-        <tr style={{ backgroundColor: "#1E3A8A", color: "#fff" }}>
-          {columns.map((col) => (
-            <th
-              key={String(col.key)}
-              onClick={() => col.sortable && handleSort(col.key)}
-            >
-              {col.header}
-              {col.sortable && sort.key === col.key ? sort.dir === "asc" ? "  ▲" : "  ▼" : col.sortable ? "  ⇅": ""}
-            </th>
-          ))}
-        </tr>
-      </thead>
-
-      <tbody>
-        {/* {data.map((row, ri) => ( */}
-        {sorted.map((row, ri) => (
-          <tr
-            key={String(row[rowKey])}
-            onClick={() => onRowClick?.(row)}
-            style={{
-              backgroundColor: ri % 2 === 0 ? "#fff" : "#F8FAFC",
-              cursor: onRowClick ? "pointer" : "default",
-            }}
-          >
+        <thead>
+          <tr style={{ backgroundColor: "#1E3A8A", color: "#fff" }}>
             {columns.map((col) => (
-              <td key={String(col.key)} style={{ padding: 8 }}>
-                {col.render
-                  ? col.render(row[col.key], row)
-                  : String(row[col.key])}
-              </td>
+              <th
+                key={String(col.key)}
+                onClick={() => col.sortable && handleSort(col.key)}
+              >
+                {col.header}
+                {col.sortable && sort.key === col.key
+                  ? sort.dir === "asc"
+                    ? "  ▲"
+                    : "  ▼"
+                  : col.sortable
+                    ? "  ⇅"
+                    : ""}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {/* {data.map((row, ri) => ( */}
+          {/* {sorted.map((row, ri) => ( */}
+          {filteredData.map((row, ri) => (
+            <tr
+              key={String(row[rowKey])}
+              onClick={() => onRowClick?.(row)}
+              style={{
+                backgroundColor: ri % 2 === 0 ? "#fff" : "#F8FAFC",
+                cursor: onRowClick ? "pointer" : "default",
+              }}
+            >
+              {columns.map((col) => (
+                <td key={String(col.key)} style={{ padding: 8 }}>
+                  {col.render
+                    ? col.render(row[col.key], row)
+                    : String(row[col.key])}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }
 export default DataTable;
