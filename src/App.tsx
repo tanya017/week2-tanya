@@ -146,6 +146,7 @@ function App() {
         data={positions}
         rowKey="id"
         filterKey='symbol'
+        pageSize={2}          
         columns={[
           { key: "symbol", header: "Symbol", sortable: true },
           { key: "quantity", header: "Qty", sortable: true },
