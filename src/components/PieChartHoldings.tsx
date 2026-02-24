@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Tooltip, Legend, Text } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend} from "recharts";
 import type { Holding } from "../types/stock.types";
 
 interface PieChartHoldingsProp {
