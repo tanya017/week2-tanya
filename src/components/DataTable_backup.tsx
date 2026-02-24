@@ -25,6 +25,7 @@ interface DataTableProps<T extends object> {
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
   filterKey?: keyof T;
+  pageSize?: number;
 }
 
 // 3. Generic component - not the <T extends object> on the arrow function
@@ -35,9 +36,11 @@ function DataTable<T extends object>({
   onRowClick,
   emptyMessage = "No data found.",
   filterKey,
+  pageSize
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<SortState<T>>({ key: null, dir: null });
   const [filtering, setFiltering] = useState("");
+  const [page, setPage] = useState(1);
 
   const handleSort = (key: keyof T) => {
     setSort((prev) => ({
@@ -64,6 +67,16 @@ function DataTable<T extends object>({
         )
       : sorted;
 
+  // Total pages based on filtered results
+  const totalPages = pageSize ? Math.ceil(filteredData.length / pageSize) : 1;
+
+  // Clamp page if filter reduces result count
+  const safePage = Math.min(page, Math.max(1, totalPages));
+
+  // Slice the filtered+sorted array for the current page
+  const paginated = pageSize
+    ? filteredData.slice((safePage - 1) * pageSize, safePage * pageSize)
+    : filteredData;
 
   if (DataTable.length === 0) return <p>{emptyMessage}</p>;
 
@@ -121,7 +134,8 @@ function DataTable<T extends object>({
         <tbody>
           {/* {data.map((row, ri) => ( */}
           {/* {sorted.map((row, ri) => ( */}
-          {filteredData.map((row, ri) => (
+          {/* {filteredData.map((row, ri) => ( */}
+          {paginated.map((row, ri) => (
             <tr
               key={String(row[rowKey])}
               onClick={() => onRowClick?.(row)}
@@ -141,6 +155,43 @@ function DataTable<T extends object>({
           ))}
         </tbody>
       </table>
+
+      {pageSize && totalPages > 1 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginTop: 8,
+          }}
+        >
+          <button
+            disabled={safePage <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            style={{
+              padding: "4px 12px",
+              cursor: safePage <= 1 ? "not-allowed" : "pointer",
+            }}
+          >
+            ← Previous
+          </button>
+
+          <span style={{ fontSize: 14, color: "#374151" }}>
+            Page {safePage} of {totalPages} ({filteredData.length} rows)
+          </span>
+
+          <button
+            disabled={safePage >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            style={{
+              padding: "4px 12px",
+              cursor: safePage >= totalPages ? "not-allowed" : "pointer",
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      )}
     </>
   );
 }
