@@ -4,6 +4,7 @@
 import React from 'react';
 import type{ Holding } from '../../types/stock.types';
 import DataTable   from '../../components/DataTable';
+import PieChartHoldings from '../../components/PieChartHoldings';
  
 interface HoldingsFeatureProps {
   holdings: Holding[];
@@ -45,6 +46,8 @@ const HoldingsFeature: React.FC<HoldingsFeatureProps> = ({ holdings }) => {
           },
         ]}
       />
+
+      <PieChartHoldings data={holdings}/>
     </>
   );
 };
