@@ -13,7 +13,7 @@
 //   - handleNewTrade function
 //   - All prop values passed to features
  
-import React, { lazy, useState } from 'react';
+import { lazy, useState } from 'react';
 //                ^    ^
 //                |    useState — you already know this
 //                lazy — NEW: added to the import
