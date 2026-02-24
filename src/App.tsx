@@ -146,17 +146,19 @@ function App() {
         data={positions}
         rowKey="id"
         columns={[
-          { key: "symbol", header: "Symbol" },
-          { key: "quantity", header: "Qty" },
+          { key: "symbol", header: "Symbol", sortable: true },
+          { key: "quantity", header: "Qty", sortable: true },
           {
             key: "avgPrice",
             header: "Average Price",
+            sortable: true,
             render: (v) => `$${Number(v).toFixed(2)}`,
           },
-          { key: "ltp", header: "Last Traded Price" },
+          { key: "ltp", header: "Last Traded Price", sortable: true },
           {
             key: "pnl",
             header: "Profit & Loss",
+            sortable: true,
             render: (v) => {
               const n = Number(v);
               return (
@@ -196,8 +198,16 @@ function App() {
             header: "Invested Value",
             render: (v) => `$${Number(v).toFixed(2)}`,
           },
-          { key: "currentValue", header: "Current Value", render: (v) => `$${Number(v).toFixed(2)}` },
-          { key: "totalReturn", header: "Total Return", render: (v) => `${Number(v).toFixed(2)}` },
+          {
+            key: "currentValue",
+            header: "Current Value",
+            render: (v) => `$${Number(v).toFixed(2)}`,
+          },
+          {
+            key: "totalReturn",
+            header: "Total Return",
+            render: (v) => `${Number(v).toFixed(2)}`,
+          },
         ]}
       />
 
