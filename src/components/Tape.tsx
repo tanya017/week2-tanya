@@ -1,11 +1,11 @@
 import { stocks } from "../data/stockData";
 
 const Tape = () => {
-
+  const items = [...stocks, ...stocks]
   return (
     <div className="ticker-container">
       <div className="ticker-content">
-        {stocks.map((item, index) => (
+        {items.map((item, index) => (
           <div key={index} className="ticker-item">
             <span className="symbol">{item.symbol}</span>
             <span className="price">{item.price}</span>
