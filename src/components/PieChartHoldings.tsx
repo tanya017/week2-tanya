@@ -58,7 +58,7 @@ const PieChartHoldings: React.FC<PieChartHoldingsProp> = ({ data }) => {
           color: "#555",
           marginTop: 20 
         }}>
-          Based on Current Value
+          Portfolio Holdings
         </p>
       </div>
     </div>

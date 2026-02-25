@@ -106,7 +106,7 @@ function App() {
 // Part 5 — JSX with all 5 features wrapped in SuspenseBoundary
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24, fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ color: '#1E3A8A' }}>Stock Market Dashboard</h1>
+      <h1 style={{ color: '#1E3A8A', marginBottom: 0}}>Stock Market Dashboard</h1>
  
       {/* ── FEATURE 1: Live Quotes — uses BOTH skeletons ── */}
       <SuspenseBoundary
