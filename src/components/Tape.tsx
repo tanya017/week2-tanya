@@ -1,11 +1,11 @@
 import { stocks } from "../data/stockData";
 
 const Tape = () => {
-
+  const items = [...stocks, ...stocks]
   return (
     <div className="ticker-container">
       <div className="ticker-content">
-        {stocks.map((item, index) => (
+        {items.map((item, index) => (
           <div key={index} className="ticker-item">
             <span className="symbol">{item.symbol}</span>
             <span className="price">{item.price}</span>
@@ -27,7 +27,7 @@ const Tape = () => {
         .ticker-content {
           display: flex;
           white-space: nowrap;
-          animation: scroll-left 30s linear infinite;
+          animation: scroll-left 55s linear infinite;
         }
 
         .ticker-container:hover .ticker-content {
