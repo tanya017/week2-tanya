@@ -6,6 +6,7 @@ import React from 'react';
 import type { Stock }        from '../../types/stock.types';
 import StockCard        from '../../components/StockCard';
 import SearchBar        from '../../components/SearchBar';
+import Tape from '../../components/Tape';
 import useVirtualList   from '../../hooks/useVirtualList'; // NEW
  
 const ROW_HEIGHT       = 44;                        // NEW
@@ -34,6 +35,7 @@ const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
  
   return (
     <>
+    <Tape />
       {/* SearchBar — unchanged */}
       <SearchBar onSearch={onSearch} onFilterChange={onFilterChange}
         placeholder="Search by symbol or name..." />
