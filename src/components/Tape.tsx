@@ -27,7 +27,7 @@ const Tape = () => {
         .ticker-content {
           display: flex;
           white-space: nowrap;
-          animation: scroll-left 30s linear infinite;
+          animation: scroll-left 55s linear infinite;
         }
 
         .ticker-container:hover .ticker-content {
