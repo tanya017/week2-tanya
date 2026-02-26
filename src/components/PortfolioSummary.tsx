@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { stocks as allStocks } from "../data/stockData"
 import { usePortfolioStore } from "../stores/usePortfolioStore";
 import { useShallow } from "zustand/shallow";
-import { stocks } from "../data/stockData";
+// import { stocks } from "../data/stockData";
 
 // interface PortfolioState {
 //   holdings: Stock[];
