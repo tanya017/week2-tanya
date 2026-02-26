@@ -1,23 +1,35 @@
 import DataTable from "../../components/DataTable";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import { usePositionsStore } from "../../stores/usePositionStore";
 import type { Positions } from "../../types/stock.types";
 
-interface PositionFeatureProps {
-  positionData:  Positions[];
-}
+// interface PositionFeatureProps {
+//   positionData:  Positions[];
+// }
 
-const PositionFeature: React.FC<PositionFeatureProps> = ({
-    positionData
-}) =>  {
+const PositionFeature: React.FC = () => {
+  const positionData = usePositionsStore((s) => s.positions);
+  // const addPosition = usePositionsStore((s) => s.addPosition);
+  // const updatePosition = usePositionsStore((s) => s.updatePosition);
+  const removePosition = usePositionsStore((s) => s.removePosition);
 
-    const { visibleItems, bottomRef, hasMore } = useInfiniteScroll(positionData, 10);
-
+  const { visibleItems, bottomRef, hasMore } = useInfiniteScroll(
+    positionData,
+    10,
+  );
   return (
     <>
       {/* <h2 style={{ color: "#1E40AF" }}>Positions</h2> */}
-      <h2 style={{ color: '#1E40AF', marginTop: 32 }}>
+      <h2 style={{ color: "#1E40AF", marginTop: 32 }}>
         Positions
-        <span style={{ fontSize: 14, fontWeight: 'normal', color: '#6B7280', marginLeft: 12 }}>
+        <span
+          style={{
+            fontSize: 14,
+            fontWeight: "normal",
+            color: "#6B7280",
+            marginLeft: 12,
+          }}
+        >
           {visibleItems.length} of {positionData.length} shown
         </span>
       </h2>
@@ -25,6 +37,11 @@ const PositionFeature: React.FC<PositionFeatureProps> = ({
         data={visibleItems}
         rowKey="id"
         filterKey="symbol"
+        removeBtn={(pos) => {
+          if (window.confirm(`Delete ${pos.symbol}?`)) {
+            removePosition(pos.id);
+          }
+        }}
         columns={[
           { key: "symbol", header: "Symbol", sortable: true },
           { key: "quantity", header: "Qty", sortable: true },
@@ -69,16 +86,16 @@ const PositionFeature: React.FC<PositionFeatureProps> = ({
 
       {/* NEW: status messages */}
       {hasMore && (
-        <p style={{ textAlign: 'center', color: '#6B7280', padding: '8px 0' }}>
+        <p style={{ textAlign: "center", color: "#6B7280", padding: "8px 0" }}>
           Scroll down to see more trades...
         </p>
       )}
       {hasMore === false && positionData.length > 0 && (
-        <p style={{ textAlign: 'center', color: '#9CA3AF', padding: '8px 0' }}>
+        <p style={{ textAlign: "center", color: "#9CA3AF", padding: "8px 0" }}>
           All {positionData.length} trades loaded
         </p>
       )}
     </>
   );
-}
+};
 export default PositionFeature;

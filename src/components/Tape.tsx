@@ -20,6 +20,7 @@ const Tape = () => {
         .ticker-container {
           width: 100%;
           padding: 20px 0;
+          overflow: hidden;
           display: flex;
           align-items: center;
         }

@@ -1,29 +1,35 @@
  
 import React from 'react';
-import type { Trade, Stock } from '../../types/stock.types';
+import type { Trade } from '../../types/stock.types';
 import DataTable          from '../../components/DataTable';
 import TradeForm          from '../../components/TradeForm';
 import useInfiniteScroll  from '../../hooks/useInfiniteScroll'; // NEW
+import { useTradeStore } from '../../stores/useTradeStore';
+import { useShallow } from 'zustand/shallow';
+import { useStockStore } from '../../stores/useStockStore';
  
-type NewTradeInput = Omit<Trade, 'id' | 'date'>;
  
-interface TradeFeatureProps {
-  tradeHistory:  Trade[];
-  stocks:        Stock[];
-  selectedStock: Stock | null;
-  onSubmitTrade: (input: NewTradeInput) => void;
-}
+// interface TradeFeatureProps {
+//   tradeHistory:  Trade[];
+//   stocks:        Stock[];
+//   selectedStock: Stock | null;
+//   onSubmitTrade: (input: NewTradeInput) => void;
+// }
  
-const TradeFeature: React.FC<TradeFeatureProps> = ({
-  tradeHistory,
-  stocks,
-  selectedStock,
-  onSubmitTrade,
-}) => {
+const TradeFeature: React.FC = () => {
  
   // NEW: get the slice of items + ref + flag from the hook
+  const {tradeHistory, addTrade} = useTradeStore(
+    useShallow((state) => ({
+      tradeHistory: state.tradeHistory,
+      addTrade: state.addTrade
+    }))
+  )
+
+  const allStocks = useStockStore((s) => s.allStocks);
+  const selectedStock = useStockStore((s) => s.selectedStock);
+
   const { visibleItems, bottomRef, hasMore } = useInfiniteScroll(tradeHistory, 10);
- 
   return (
     <>
       <h2 style={{ color: '#1E40AF', marginTop: 32 }}>
@@ -72,8 +78,8 @@ const TradeFeature: React.FC<TradeFeatureProps> = ({
       {/* Trade form is unchanged */}
       <h2 style={{ color: '#1E40AF', marginTop: 32 }}>Place a Trade</h2>
       <TradeForm
-        stocks={stocks}
-        onSubmitTrade={onSubmitTrade}
+        stocks={allStocks}
+        onSubmitTrade={addTrade}
         initialValues={selectedStock ?? {}}
       />
     </>
