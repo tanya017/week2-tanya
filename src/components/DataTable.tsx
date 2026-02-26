@@ -1,5 +1,6 @@
 // Generic Components
 import { useState } from "react";
+import type { Positions } from "../types/stock.types";
 
 type SortDir = "asc" | "desc" | null;
 
@@ -25,6 +26,7 @@ interface DataTableProps<T extends object> {
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
   filterKey?: keyof T;
+  removeBtn?: (position: Positions) => void;
 }
 
 // 3. Generic component - not the <T extends object> on the arrow function
@@ -35,6 +37,7 @@ function DataTable<T extends object>({
   onRowClick,
   emptyMessage = "No data found.",
   filterKey,
+  removeBtn,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<SortState<T>>({ key: null, dir: null });
   const [filtering, setFiltering] = useState("");
@@ -63,7 +66,6 @@ function DataTable<T extends object>({
             .includes(filtering.toLowerCase()),
         )
       : sorted;
-
 
   if (DataTable.length === 0) return <p>{emptyMessage}</p>;
 
@@ -115,6 +117,8 @@ function DataTable<T extends object>({
                     : ""}
               </th>
             ))}
+            {/* Add Action Header if removeBtn exists */}
+            {removeBtn && <th style={{ padding: 8 }}>Actions</th>}
           </tr>
         </thead>
 
@@ -137,6 +141,27 @@ function DataTable<T extends object>({
                     : String(row[col.key])}
                 </td>
               ))}
+              {/* Add Action Cell with the button */}
+              {removeBtn && (
+                <td style={{ padding: 8 }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents onRowClick from firing
+                      removeBtn(row as unknown as Positions);
+                    }}
+                    style={{
+                      backgroundColor: "#EF4444",
+                      color: "white",
+                      border: "none",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

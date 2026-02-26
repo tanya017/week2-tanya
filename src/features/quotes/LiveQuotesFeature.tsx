@@ -2,31 +2,43 @@
 // FILE: src/features/quotes/LiveQuotesFeature.tsx
 // NEW lines are marked with // NEW
  
-import React from 'react';
-import type { Stock }        from '../../types/stock.types';
+
+// import type { Stock }        from '../../types/stock.types';
+import { useStockStore } from '../../stores/useStockStore';
 import StockCard        from '../../components/StockCard';
 import SearchBar        from '../../components/SearchBar';
 import Tape from '../../components/Tape';
 import useVirtualList   from '../../hooks/useVirtualList'; // NEW
+import { useShallow } from 'zustand/shallow';
  
 const ROW_HEIGHT       = 44;                        // NEW
 const VISIBLE_ROWS     = 12;                        // NEW
 const CONTAINER_HEIGHT = ROW_HEIGHT * VISIBLE_ROWS; // NEW
  
-interface LiveQuotesFeatureProps {
-  stocks:         Stock[];
-  selectedStock:  Stock | null;
-  onSelectStock:  (stock: Stock) => void;
-  onSearch:       (query: string) => void;
-  onFilterChange: (sector: string) => void;
-}
+// interface LiveQuotesFeatureProps {
+//   stocks:         Stock[];
+//   selectedStock:  Stock | null;
+//   onSelectStock:  (stock: Stock) => void;
+//   onSearch:       (query: string) => void;
+//   onFilterChange: (sector: string) => void;
+// }
  
-const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
-  stocks, selectedStock, onSelectStock, onSearch, onFilterChange,
-}) => {
+// const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
+//   stocks, selectedStock, onSelectStock, onSearch, onFilterChange,
+// }) => {
+const LiveQuotesFeature = () => {
  
+  const {filteredStocks, selectedStock, setSelectedStock,setSearchQuery, setSectorFilter } = useStockStore(
+    useShallow((state) => ({
+      filteredStocks: state.filteredStocks,
+      selectedStock: state.selectedStock,
+      setSelectedStock: state.setSelectedStock,
+      setSearchQuery: state.setSearchQuery,
+      setSectorFilter: state.setSectorFilter
+    }))
+  )
   // NEW: call the hook
-  const result       = useVirtualList(stocks, { rowHeight: ROW_HEIGHT, visibleRows: VISIBLE_ROWS, overscan: 3 });
+  const result       = useVirtualList(filteredStocks, { rowHeight: ROW_HEIGHT, visibleRows: VISIBLE_ROWS, overscan: 3 });
   const visibleItems = result.visibleItems;
   const containerRef = result.containerRef;
   const spacerAbove  = result.spacerAbove;
@@ -37,16 +49,18 @@ const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
     <>
     <Tape />
       {/* SearchBar — unchanged */}
-      <SearchBar onSearch={onSearch} onFilterChange={onFilterChange}
+      {/* <SearchBar onSearch={onSearch} onFilterChange={onFilterChange} */}
+      <SearchBar onSearch={setSearchQuery} onFilterChange={setSectorFilter}
         placeholder="Search by symbol or name..." />
  
       {/* StockCard grid — unchanged */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:24 }}>
-        {stocks.map(function(stock) {
+        {filteredStocks.map(function(stock) {
           return (
             <StockCard key={stock.id} stock={stock}
               isSelected={selectedStock?.id === stock.id}
-              onSelect={onSelectStock} />
+              // onSelect={onSelectStock} />
+              onSelect={setSelectedStock} />
           );
         })}
       </div>
@@ -54,7 +68,7 @@ const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
       <h2 style={{ color:'#1E40AF' }}>
         Live Quotes
         <span style={{ fontSize:14, fontWeight:'normal', color:'#6B7280', marginLeft:12 }}>
-          {visibleItems.length} of {stocks.length} rows in DOM
+          {visibleItems.length} of {filteredStocks.length} rows in DOM
         </span>
       </h2>
  
@@ -88,7 +102,8 @@ const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
               const changeColour    = isPositive ? '#166534' : '#991B1B';
               const changePrefix    = isPositive ? '+' : '';
               return (
-                <tr key={stock.id} onClick={function() { onSelectStock(stock); }}
+                // <tr key={stock.id} onClick={function() { onSelectStock(stock); }}
+                <tr key={stock.id} onClick={function() { setSelectedStock(stock); }}
                   style={{ height:ROW_HEIGHT, background, cursor:'pointer', borderBottom:'1px solid #E5E7EB' }}>
                   <td style={{ padding:'0 8px', fontSize:14, fontWeight:'bold' }}>{stock.symbol}</td>
                   <td style={{ padding:'0 8px', fontSize:14 }}>{stock.name}</td>
@@ -111,7 +126,7 @@ const LiveQuotesFeature: React.FC<LiveQuotesFeatureProps> = ({
       </div>
  
       <p style={{ fontSize:13, color:'#9CA3AF', marginTop:6 }}>
-        {stocks.length} total — {visibleItems.length} rows in the browser right now
+        {filteredStocks.length} total — {visibleItems.length} rows in the browser right now
       </p>
     </>
   );

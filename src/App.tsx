@@ -13,17 +13,19 @@
 //   - handleNewTrade function
 //   - All prop values passed to features
  
-import { lazy, useState } from 'react';
+import { lazy } from 'react';
+// import { lazy, useState } from 'react';
 //                ^    ^
 //                |    useState — you already know this
 //                lazy — NEW: added to the import
 
 // Part 2 — eager imports (load immediately)
 // ── Data imports (UNCHANGED) ─────────────────────────────────────────
-import { stocks, trades, positions, holdings } from './data/stockData';
+// import { stocks, trades, positions, holdings } from './data/stockData';
+import { holdings } from './data/stockData';
  
 // ── Types (UNCHANGED) ────────────────────────────────────────────────
-import type{ Stock, Trade } from './types/stock.types';
+// import type{ Stock, Trade } from './types/stock.types';
  
 // ── Boundary wrapper (EAGER import — NOT lazy) ───────────────────────
 import SuspenseBoundary from './boundaries/SuspenseBoundary';
@@ -35,6 +37,7 @@ import SuspenseBoundary from './boundaries/SuspenseBoundary';
 import TableSkeleton    from './skeletons/TableSkeleton';
 import CardGridSkeleton from './skeletons/CardGridSkeleton';
 import FormSkeleton from './skeletons/FormSkeleton';
+import StockComparePanel from './components/StockComparePanel';
 // WHY NOT lazy? These ARE the fallback UI.
 // They must exist BEFORE the real components arrive.
 
@@ -70,38 +73,38 @@ const TradeFeature = lazy(function() {
 //   TradeFeature-OpQr90.js
 
 // Part 4 — state and handlers (identical to Module 1)
-type NewTradeInput = Omit<Trade, 'id' | 'date'>;
+// type NewTradeInput = Omit<Trade, 'id' | 'date'>;
  
 function App() {
  
   // ── State (COMPLETELY UNCHANGED from Module 1) ─────────────────────
-  const [selectedStock,  setSelectedStock]  = useState<Stock | null>(null);
-  const [searchQuery,    setSearchQuery]    = useState('');
-  const [sectorFilter,   setSectorFilter]   = useState('');
-  const [tradeHistory,   setTradeHistory]   = useState<Trade[]>(trades);
+  // const [selectedStock,  setSelectedStock]  = useState<Stock | null>(null);
+  // const [searchQuery,    setSearchQuery]    = useState('');
+  // const [sectorFilter,   setSectorFilter]   = useState('');
+  // const [tradeHistory,   setTradeHistory]   = useState<Trade[]>(trades);
  
   // ── Filtered stocks (UNCHANGED) ─────────────────────────────────────
-  var filteredStocks = stocks.filter(function(stock) {
-    var queryLower     = searchQuery.toLowerCase();
-    var symbolMatches  = stock.symbol.toLowerCase().includes(queryLower);
-    var nameMatches    = stock.name.toLowerCase().includes(queryLower);
-    var searchMatches  = symbolMatches || nameMatches;
-    var noFilter       = sectorFilter === '';
-    var sectorMatches  = noFilter || stock.sector === sectorFilter;
-    return searchMatches && sectorMatches;
-  });
+  // var filteredStocks = stocks.filter(function(stock) {
+  //   var queryLower     = searchQuery.toLowerCase();
+  //   var symbolMatches  = stock.symbol.toLowerCase().includes(queryLower);
+  //   var nameMatches    = stock.name.toLowerCase().includes(queryLower);
+  //   var searchMatches  = symbolMatches || nameMatches;
+  //   var noFilter       = sectorFilter === '';
+  //   var sectorMatches  = noFilter || stock.sector === sectorFilter;
+  //   return searchMatches && sectorMatches;
+  // });
  
   // ── handleNewTrade (UNCHANGED) ───────────────────────────────────────
-  function handleNewTrade(input: NewTradeInput): void {
-    var newTrade: Trade = {
-      ...input,
-      id:   `t${Date.now()}`,
-      date: new Date().toISOString().split('T')[0],
-    };
-    setTradeHistory(function(previousTrades) {
-      return [newTrade, ...previousTrades];
-    });
-  }
+  // function handleNewTrade(input: NewTradeInput): void {
+  //   var newTrade: Trade = {
+  //     ...input,
+  //     id:   `t${Date.now()}`,
+  //     date: new Date().toISOString().split('T')[0],
+  //   };
+  //   setTradeHistory(function(previousTrades) {
+  //     return [newTrade, ...previousTrades];
+  //   });
+  // }
 
 // Part 5 — JSX with all 5 features wrapped in SuspenseBoundary
   return (
@@ -112,32 +115,36 @@ function App() {
       <SuspenseBoundary
         fallback={
           <>
-            <CardGridSkeleton count={filteredStocks.length || 3} />
+            {/* <CardGridSkeleton count={filteredStocks.length || 3} /> */}
+            <CardGridSkeleton count={3} />
             <TableSkeleton rows={5} cols={6} title="Live Quotes" />
           </>
         }
       >
-        <LiveQuotesFeature
+        {/* <LiveQuotesFeature
           stocks={filteredStocks}
           selectedStock={selectedStock}
           onSelectStock={setSelectedStock}
           onSearch={setSearchQuery}
           onFilterChange={setSectorFilter}
-        />
+        /> */}
+        <LiveQuotesFeature/>
       </SuspenseBoundary>
  
       {/* ── FEATURE 2: Portfolio Summary ── */}
       <SuspenseBoundary
         fallback={<TableSkeleton rows={3} cols={3} title="Portfolio Summary" />}
       >
-        <PortfolioFeature availableStocks={stocks} />
+        {/* <PortfolioFeature availableStocks={stocks} /> */}
+        <PortfolioFeature />
       </SuspenseBoundary>
  
       {/* ── FEATURE 3: Positions ── */}
       <SuspenseBoundary
         fallback={<TableSkeleton rows={5} cols={6} title="Positions" />}
       >
-        <PositionsFeature positionData={positions} />
+        {/* <PositionsFeature positionData={positions} /> */}
+        <PositionsFeature />
       </SuspenseBoundary>
  
       {/* ── FEATURE 4: Holdings ── */}
@@ -156,14 +163,18 @@ function App() {
           </>
         }
       >
-        <TradeFeature
+        {/* <TradeFeature
           tradeHistory={tradeHistory}
           stocks={stocks}
           selectedStock={selectedStock}
           onSubmitTrade={handleNewTrade}
-        />
+        /> */}
+        <TradeFeature />
       </SuspenseBoundary>
  
+ {/* Panel auto-shows when 2+ stocks are in compareList */}
+  <StockComparePanel />
+
     </div>
   );
 }
